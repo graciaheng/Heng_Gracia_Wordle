@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/graciatheodoraheng/Desktop/personal/game/wordleGame/wordleGame.csproj": {}
+    "/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/wordleGame.csproj": {}
   },
   "projects": {
-    "/Users/graciatheodoraheng/Desktop/personal/game/wordleGame/wordleGame.csproj": {
+    "/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/wordleGame.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/graciatheodoraheng/Desktop/personal/game/wordleGame/wordleGame.csproj",
+        "projectUniqueName": "/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/wordleGame.csproj",
         "projectName": "wordleGame",
-        "projectPath": "/Users/graciatheodoraheng/Desktop/personal/game/wordleGame/wordleGame.csproj",
+        "projectPath": "/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/wordleGame.csproj",
         "packagesPath": "/Users/graciatheodoraheng/.nuget/packages/",
-        "outputPath": "/Users/graciatheodoraheng/Desktop/personal/game/wordleGame/obj/",
+        "outputPath": "/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/obj/",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "configFilePaths": [
@@ -184,6 +184,21 @@
         }
       },
       "runtimes": {
+        "android-arm": {
+          "#import": []
+        },
+        "android-arm64": {
+          "#import": []
+        },
+        "android-x64": {
+          "#import": []
+        },
+        "android-x86": {
+          "#import": []
+        },
+        "iossimulator-arm64": {
+          "#import": []
+        },
         "maccatalyst-arm64": {
           "#import": []
         }
