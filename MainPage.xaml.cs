@@ -5,13 +5,18 @@ public partial class MainPage : ContentPage
 	private readonly FileService _fileService;
 	private WordleViewModel wordleViewModel;
 	private int attempts = 0;
+    private string guess;
+    private bool isGridCreated = false;
+    private bool isGameOver = false;
+    private string[] feedback = new string[5];
 
 	public MainPage()
 	{
 		InitializeComponent();
 		_fileService = new FileService();
 		wordleViewModel = new WordleViewModel();
-		BindingContext = wordleViewModel;
+		this.BindingContext = wordleViewModel;
+        CreateTheGrid();
 	}
 
 	protected override async void OnAppearing()
@@ -36,8 +41,13 @@ public partial class MainPage : ContentPage
 
 	}
 
-	private void CreateTheGrid(object sender, EventArgs args) 
+	private void CreateTheGrid() 
 	{
+        if (isGridCreated == true)
+        {
+            return;
+        }
+
         for (int i = 0; i < 6; ++i) 
 		{
             GridPageContent.AddRowDefinition(new RowDefinition());
@@ -48,75 +58,159 @@ public partial class MainPage : ContentPage
             GridPageContent.AddColumnDefinition(new ColumnDefinition());
         }
 
-            //Populate the grid with Borders
+        GridPageContent.RowSpacing = 10;
+        GridPageContent.ColumnSpacing = 10;
+
         for (int i = 0; i < 6; ++i) {
             for (int j = 0; j < 5; ++j) {
-                Border styledBorder = new Border
+                
+                Frame styledFrame = new Frame
                 {
-                    BackgroundColor = Colors.White, // Set the background color
-                    Stroke = Colors.Grey,
-                    StrokeThickness = 3
+                    BackgroundColor = Colors.GhostWhite,
+                    BorderColor = Colors.Grey,
+                    CornerRadius = 10
                 };
 
-				GridPageContent.Add(styledBorder, j, i);
+                Label styledLabel = new Label
+                {
+                    Text = "", // Initially no text
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    FontSize = 24,
+                    FontFamily = "Karnak Condensed",
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.White
+                };
+
+                styledFrame.Content = styledLabel;
+
+				GridPageContent.Add(styledFrame, j, i);
             }
         }
+
+        isGridCreated = true;
+    }
+
+    private async void showHistory(object sender, EventArgs args) 
+	{
+        await Navigation.PushAsync(new HistoryPage());
     }
 
 	private void submitGuess(object sender, EventArgs args) 
 	{
-		string guessString = new string(wordleViewModel.Guess);
+		guess = $"{Letter1.Text}{Letter2.Text}{Letter3.Text}{Letter4.Text}{Letter5.Text}";
 
 		//check if user has inputted correctly
-        if (guessString.Length != 5 || !guessString.All(char.IsLetter))
+        if (guess.Length != 5 || !guess.All(char.IsLetter))
         {
             DisplayAlert("Invalid Guess", "Please enter a valid 5-letter word.", "OK");
             return;
         }
 
-		string[] feedback = wordleViewModel.CheckGuess();
-		UpdateGrid(feedback);
+		checkGuess();
+        UpdateGrid();
 
         //correct word
-        if (guessString.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
+        if (guess.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
         {
-            DisplayAlert("Congratulations!", "You have guessed this word!", "OK");
+            DisplayStatus.Text = "You Won!";
         }
 
         //wrong word
         else
         {
-            wordleViewModel.IncrementAttempts();
+            attempts++;
 
-            if (wordleViewModel.Attempts == 6)
+            if (attempts == 6)
             {
-                DisplayAlert("Game Over!", "You have ran out of attempts!", "OK");
+                DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord}";
+                isGameOver = true;
+                savePlayerAttempt(isGameOver, wordleViewModel.ChosenWord, attempts);
+                DisableSubmitButton();
             }
         }
+
+        ClearEntryFields();
 	}
 
-	private void UpdateGrid(string[] feedback)
+    private void ClearEntryFields()
+    {
+        Letter1.Text = string.Empty;
+        Letter2.Text = string.Empty;
+        Letter3.Text = string.Empty;
+        Letter4.Text = string.Empty;
+        Letter5.Text = string.Empty;
+    }
+
+    private void checkGuess() 
+    {
+        Array.Fill(feedback, string.Empty);
+        bool[] matched = new bool[5];
+
+        for (int i = 0; i < 5; i++)
+        {
+            char guessedLetter = char.ToUpper(guess[i]);
+            char correctLetter = char.ToUpper(wordleViewModel.ChosenWord[i]);
+
+            if (guessedLetter == correctLetter)
+            {
+                feedback[i] = "Correct";
+                matched[i] = true;
+            }
+        }
+
+        for (int i = 0; i < 5; i++) 
+        {
+            if (feedback[i] == "Correct")
+            continue; //skip if already matched
+
+            char guessedLetter = char.ToUpper(guess[i]);
+
+            for (int j = 0; j < 5; j++)
+            {
+                //only updates if this letter has not been matched yet
+                if (!matched[j] && char.ToUpper(wordleViewModel.ChosenWord[j]) == guessedLetter)
+                {
+                    feedback[i] = "WrongPlace"; 
+                    matched[j] = true;
+                    break;
+                }
+            }
+
+            if (feedback[i] == string.Empty)
+            {
+                feedback[i] = "Incorrect";  
+            }
+        }
+    }
+
+	private void UpdateGrid()
 	{
 		for (int i = 0; i < 5; i++) {
 			 
 			  // Get the correct Border from the grid
-			int index = i + (wordleViewModel.Attempts * 5);
+			int index = i + (attempts * 5);
 
-            if (GridPageContent.Children[index] is Border border)
+            if (GridPageContent.Children[index] is Frame frame)
 			{
-				switch (feedback[i])
-			    {
-				    case "Correct":
-                    border.BackgroundColor = Colors.YellowGreen;
-                    break;
-                
-				    case "WrongPlace":
-                    border.BackgroundColor = Colors.Gold;
-                    break;
+                if (frame.Content is Label label)
+                {
+                    label.Text = guess[i].ToString().ToUpper();
 
-                    case "Incorrect":
-                    border.BackgroundColor = Colors.Gray;
-                    break;
+				    switch (feedback[i])
+			        {
+				        case "Correct":
+                        frame.BackgroundColor = Colors.YellowGreen;
+                        break;
+                
+				        case "WrongPlace":
+                        frame.BackgroundColor = Colors.Gold;
+                        break;
+
+                        case "Incorrect":
+                        frame.BackgroundColor = Colors.Gray;
+                        break;
+                    }
                 }
 			}
 			else
@@ -125,5 +219,22 @@ public partial class MainPage : ContentPage
 			}
 		}
 	}
+
+    private void DisableSubmitButton()
+    {
+        Letter1.IsEnabled = false;
+        Letter2.IsEnabled = false;
+        Letter3.IsEnabled = false;
+        Letter4.IsEnabled = false;
+        Letter5.IsEnabled = false;
+        submitButton.IsEnabled = false; // Disable the submit button after game over
+    }
+
+    private void savePlayerAttempt(bool isWordGuessed, string correctWord, int numOfGuesses)
+    {
+        var attempt = new PlayerAttempt(isWordGuessed, correctWord, numOfGuesses);
+        wordleViewModel.PlayerHistory.Attempts.Add(attempt);
+        wordleViewModel.PlayerHistory.SaveHistoryAsync();
+    }
 }
 

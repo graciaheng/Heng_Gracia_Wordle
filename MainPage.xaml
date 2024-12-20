@@ -7,22 +7,24 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25"
-            BackgroundColor="LightYellow">
+            BackgroundColor="White">
 
-            <Label Text="Wordle" 
+            <Label Text="WORDLE" 
                 FontSize="30" 
-                FontFamily="Comic Sans MS"
+                FontFamily="Karnak Condensed"
+                FontAttributes="Bold"
                 TextColor="Black"
                 HorizontalOptions="Center" />
 
         <Label x:Name="chosenWordLbl"  
             Text="{Binding ChosenWord}" 
             FontSize="30" 
-            FontFamily="Comic Sans MS"
+            FontFamily="Karnak Condensed"
+            FontAttributes="Bold"
             TextColor="Black"
             HorizontalOptions="Center"/>
 
-        <Grid x:Name="GridPageContent" BackgroundColor="Grey"
+        <Grid x:Name="GridPageContent" BackgroundColor="White"
          HeightRequest="500" 
          WidthRequest="500"
          HorizontalOptions="CenterAndExpand" 
@@ -35,67 +37,84 @@
                 <Entry x:Name="Letter1" 
                     WidthRequest="40" 
                     HeightRequest="40" 
-                    FontSize="20" 
+                    FontSize="20"
+                    FontFamily="Karnak Condensed"
+                    FontAttributes="Bold"
                     HorizontalTextAlignment="Center" 
                     MaxLength="1"
                     BackgroundColor="GhostWhite"
-                    TextColor="Black"
-                    Text="{Binding Guess[0], Mode=TwoWay}" />
+                    TextColor="Black" />
 
                 <Entry x:Name="Letter2" 
                     WidthRequest="40" 
                     HeightRequest="40" 
                     FontSize="20" 
+                    FontFamily="Karnak Condensed"
+                    FontAttributes="Bold"
                     HorizontalTextAlignment="Center" 
                     MaxLength="1"
                     BackgroundColor="GhostWhite"
-                    TextColor="Black"
-                    Text="{Binding Guess[1], Mode=TwoWay}" />
+                    TextColor="Black" />
 
                 <Entry x:Name="Letter3"
                     WidthRequest="40"
                     HeightRequest="40" 
                     FontSize="20"
+                    FontFamily="Karnak Condensed"
+                    FontAttributes="Bold"
                     HorizontalTextAlignment="Center" 
                     MaxLength="1"
                     BackgroundColor="GhostWhite"
-                    TextColor="Black"
-                    Text="{Binding Guess[2], Mode=TwoWay}"/>
+                    TextColor="Black"/>
                 
                 <Entry x:Name="Letter4" 
                     WidthRequest="40" 
                     HeightRequest="40" 
                     FontSize="20" 
+                    FontFamily="Karnak Condensed"
+                    FontAttributes="Bold"
                     HorizontalTextAlignment="Center" 
                     MaxLength="1"
                     BackgroundColor="GhostWhite"
-                    TextColor="Black"
-                    Text="{Binding Guess[3], Mode=TwoWay}"/>
+                    TextColor="Black"/>
                 
                 <Entry x:Name="Letter5" 
                     WidthRequest="40" 
                     HeightRequest="40" 
                     FontSize="20" 
+                    FontFamily="Karnak Condensed"
+                    FontAttributes="Bold"
                     HorizontalTextAlignment="Center" 
                     MaxLength="1"
                     BackgroundColor="GhostWhite"
-                    TextColor="Black"
-                    Text="{Binding Guess[4], Mode=TwoWay}"/>
+                    TextColor="Black"/>
             </HorizontalStackLayout>
+            
+            <Label x:Name = "DisplayStatus"
+                HorizontalOptions="Center"
+                FontSize="20"
+                FontFamily="Karnak Condensed"
+                FontAttributes="Bold"
+                TextColor="Black" />
 
-            <Button Text="Start Game" 
-                FontFamily="Comic Sans MS"
+            <Button x:Name="submitButton"
+                Text="Submit Guess" 
+                FontFamily="Karnak Condensed"
+                FontAttributes="Bold"
                 BackgroundColor="YellowGreen"
                 TextColor="White"
-                Clicked="CreateTheGrid" />
-
-            <Button Text="Submit Guess" 
-                FontFamily="Comic Sans MS"
-                BackgroundColor="YellowGreen"
-                TextColor="White"
+                WidthRequest="300"
                 Clicked="submitGuess" />
+
+            <Button x:Name="historyButton"
+                Text="View History" 
+                FontFamily="Karnak Condensed"
+                FontAttributes="Bold"
+                BackgroundColor="YellowGreen"
+                TextColor="White"
+                WidthRequest="300"
+                Clicked="showHistory" />
 
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

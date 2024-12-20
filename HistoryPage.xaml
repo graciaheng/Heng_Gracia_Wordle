@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wordleGame.HistoryPage"
+             Title="HistoryPage">
+    <VerticalStackLayout
+        Padding="30,0"
+        Spacing="25"
+        BackgroundColor="White">
+
+        <CollectionView x:Name="HistoryCollectionView" ItemsSource="{Binding Attempts}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="5">
+                        <Label Text="{Binding CorrectWord}" 
+                            FontSize="30" 
+                            FontFamily="Karnak Condensed"
+                            FontAttributes="Bold"
+                            TextColor="Black" />
+
+                        <Label Text="{Binding NumOfGuesses, StringFormat='Guesses: {0}'}" 
+                            FontSize="30" 
+                            FontFamily="Karnak Condensed"
+                            FontAttributes="Bold"
+                            TextColor="Black" />
+
+                        <Label Text="{Binding Timestamp, StringFormat='Attempted on: {0:MM/dd/yyyy hh:mm tt}'}" 
+                            FontSize="30" 
+                            FontFamily="Karnak Condensed"
+                            FontAttributes="Bold"
+                            TextColor="Black" />
+
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button x:Name="BackToGame"
+                Text="Back To Game" 
+                FontFamily="Karnak Condensed"
+                FontAttributes="Bold"
+                BackgroundColor="YellowGreen"
+                TextColor="White"
+                WidthRequest="300"
+                Clicked="ReturnToGame" />
+    </VerticalStackLayout>
+</ContentPage>
