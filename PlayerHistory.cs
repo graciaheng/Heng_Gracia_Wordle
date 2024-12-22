@@ -18,8 +18,17 @@ namespace wordleGame
             try
             {
                 string json = JsonSerializer.Serialize(this);
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), FileName);
+                string directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string filePath = Path.Combine(directory, FileName);
+               
+                Directory.CreateDirectory(directory);
                 await File.WriteAllTextAsync(filePath, json);
+
+                string backupFilePath = Path.Combine(directory, "backup_" + FileName);
+                if (File.Exists(filePath))
+                {
+                    File.Copy(filePath, backupFilePath, true); // Backup the current file
+                }
             }
             catch (Exception ex)
             {
@@ -32,16 +41,17 @@ namespace wordleGame
         {
             try
             {
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), FileName);
+                string directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string filePath = Path.Combine(directory, FileName);
 
                 if (File.Exists(filePath))
                 {
                     string json = await File.ReadAllTextAsync(filePath);
                     var history = JsonSerializer.Deserialize<PlayerHistory>(json);
 
-                    // if the history exists, update the Attempts list
                     if (history != null)
                     {
+                        // Clear and load the attempts from the deserialized history
                         Attempts.Clear();
                         foreach (var attempt in history.Attempts)
                         {
@@ -64,6 +74,7 @@ namespace wordleGame
         {
             //add new attempts to the list
             Attempts.Add(newAttempt);
+            SaveHistoryAsync();
         }
     }
 }

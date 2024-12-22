@@ -9,14 +9,14 @@ namespace wordleGame
         private bool IsWordGuessed { get; set; }
         private string CorrectWord { get; set; }
         private int NumOfGuesses { get; set; }
-        private DateTime Timestamp { get; set; } = DateTime.Now;
+        private DateTime Timestamp { get; set; }
 
         public PlayerAttempt(bool isWordGuessed, string correctWord, int numOfGuesses)
         {
             IsWordGuessed = isWordGuessed;
             CorrectWord = correctWord;
             NumOfGuesses = numOfGuesses;
-            //Timestamp = timestamp;
+            Timestamp = DateTime.Now;
         }
 
     }

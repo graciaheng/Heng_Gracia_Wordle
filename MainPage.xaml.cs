@@ -96,7 +96,7 @@ public partial class MainPage : ContentPage
         await Navigation.PushAsync(new HistoryPage());
     }
 
-	private void submitGuess(object sender, EventArgs args) 
+	private async void submitGuess(object sender, EventArgs args) 
 	{
 		guess = $"{Letter1.Text}{Letter2.Text}{Letter3.Text}{Letter4.Text}{Letter5.Text}";
 
@@ -114,6 +114,7 @@ public partial class MainPage : ContentPage
         if (guess.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
         {
             DisplayStatus.Text = "You Won!";
+            await playAgain();
         }
 
         //wrong word
@@ -124,9 +125,7 @@ public partial class MainPage : ContentPage
             if (attempts == 6)
             {
                 DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord}";
-                isGameOver = true;
-                savePlayerAttempt(isGameOver, wordleViewModel.ChosenWord, attempts);
-                DisableSubmitButton();
+                await playAgain();
             }
         }
 
@@ -220,6 +219,16 @@ public partial class MainPage : ContentPage
 		}
 	}
 
+    private void EnableSubmitButton()
+    {
+        Letter1.IsEnabled = true;
+        Letter2.IsEnabled = true;
+        Letter3.IsEnabled = true;
+        Letter4.IsEnabled = true;
+        Letter5.IsEnabled = true;
+        submitButton.IsEnabled = true; // enable the submit button after game over
+    }
+
     private void DisableSubmitButton()
     {
         Letter1.IsEnabled = false;
@@ -230,11 +239,54 @@ public partial class MainPage : ContentPage
         submitButton.IsEnabled = false; // Disable the submit button after game over
     }
 
-    private void savePlayerAttempt(bool isWordGuessed, string correctWord, int numOfGuesses)
+    private async void RestartGame() 
+    {
+        attempts = 0;
+        isGameOver = true;
+        guess = string.Empty;
+
+        savePlayerAttempt(isGameOver, wordleViewModel.ChosenWord, attempts);
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+            
+                int index = i * 5 + j;
+
+                if (GridPageContent.Children[index] is Frame frame)
+                {
+                    if (frame.Content is Label label)
+                    {
+                        //reset background color
+                        frame.BackgroundColor = Colors.GhostWhite;
+                        label.Text = string.Empty; 
+                    }
+                }
+            }
+        }
+
+        await OnAppearing();
+        EnableSubmitButton();
+    }
+
+    private async Task playAgain()
+    {
+        bool playAgain = await DisplayAlert("Congratulations!", "Would you like to play another round?", "Yes", "No");
+            
+        if (playAgain)
+        {
+            RestartGame();
+        }
+        else
+        {
+            DisplayStatus.Text = "Thank you for playing!";
+        }
+    }
+
+    private async Task savePlayerAttempt(bool isWordGuessed, string correctWord, int numOfGuesses)
     {
         var attempt = new PlayerAttempt(isWordGuessed, correctWord, numOfGuesses);
         wordleViewModel.PlayerHistory.Attempts.Add(attempt);
-        wordleViewModel.PlayerHistory.SaveHistoryAsync();
+        await wordleViewModel.PlayerHistory.SaveHistoryAsync();
     }
 }
 
