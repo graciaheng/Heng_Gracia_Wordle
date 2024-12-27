@@ -28,6 +28,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = wordleGame.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
 build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
 
+[/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/DoubleGame.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = wordleGame.DoubleGame.xaml
+build_metadata.AdditionalFiles.TargetPath = DoubleGame.xaml
+build_metadata.AdditionalFiles.RelativePath = DoubleGame.xaml
+
 [/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/HistoryPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = wordleGame.HistoryPage.xaml
@@ -51,3 +57,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = wordleGame.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources/Styles/Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources/Styles/Styles.xaml
+
+[/Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/StartPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = wordleGame.StartPage.xaml
+build_metadata.AdditionalFiles.TargetPath = StartPage.xaml
+build_metadata.AdditionalFiles.RelativePath = StartPage.xaml

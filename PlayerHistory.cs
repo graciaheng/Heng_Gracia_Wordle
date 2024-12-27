@@ -76,5 +76,11 @@ namespace wordleGame
             Attempts.Add(newAttempt);
             SaveHistoryAsync();
         }
+
+        private bool IsWordGuessed { get; set; }
+        private string CorrectWord { get; set; }
+        private int NumOfGuesses { get; set; }
+        private DateTime Timestamp { get; set; }
+
     }
 }

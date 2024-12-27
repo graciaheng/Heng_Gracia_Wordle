@@ -7,9 +7,7 @@ namespace wordleGame
     public class WordleViewModel : INotifyPropertyChanged
     {
         private string chosenWord;
-        private string guess;
-        private int attempts;
-        private bool isGameOver = false;
+        private string chosenWord2;
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName = null)
@@ -27,6 +25,20 @@ namespace wordleGame
                 {
                     chosenWord = value;
                     OnPropertyChanged(nameof(ChosenWord));
+                }
+            }
+        }
+
+        public string ChosenWord2
+        {
+            get => chosenWord2;
+
+            set
+            {
+                if (chosenWord2 != value)
+                {
+                    chosenWord2 = value;
+                    OnPropertyChanged(nameof(ChosenWord2));
                 }
             }
         }

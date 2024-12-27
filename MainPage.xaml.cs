@@ -1,4 +1,11 @@
-﻿namespace wordleGame;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace wordleGame;
 
 public partial class MainPage : ContentPage
 {
@@ -10,7 +17,7 @@ public partial class MainPage : ContentPage
     private bool isGameOver = false;
     private string[] feedback = new string[5];
 
-	public MainPage()
+	public MainPage(string playerName)
 	{
 		InitializeComponent();
 		_fileService = new FileService();
@@ -22,7 +29,7 @@ public partial class MainPage : ContentPage
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
-		
+
         try 
         {
 			var words = await _fileService.ReadWords();
@@ -40,6 +47,57 @@ public partial class MainPage : ContentPage
         }
 
 	}
+
+    /*private async Task LoadOrCreatePlayer(string playerName)
+    {
+        string directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string playerFilePath = Path.Combine(directory, $"{playerName}.json");
+
+        if (File.Exists(playerFilePath))
+        {
+            // Load the player data from the file
+            string json = await File.ReadAllTextAsync(playerFilePath);
+            player1 = JsonSerializer.Deserialize<Player>(json);
+        }
+        else
+        {
+            // Create a new player
+            player1 = new Player(playerName);
+            string json = JsonSerializer.Serialize(player1);
+            await File.WriteAllTextAsync(playerFilePath, json);
+        }
+    }*/
+
+    private async Task<string> GetRandomWordAsync()
+    {
+        var words = await _fileService.ReadWords();
+        if (words == null || words.Length == 0)
+        {
+            throw new Exception("No words available.");
+        }
+
+        return words[new Random().Next(words.Length)];
+    }
+    
+    private async Task SetNewWordAsync()
+    { 
+        try 
+        {
+			var words = await _fileService.ReadWords();
+            if (words == null || words.Length == 0)
+            {
+				throw new Exception("No words available in the file.");
+            }
+			
+            string chosenWord = words[new Random().Next(words.Length)];
+            wordleViewModel.ChosenWord = chosenWord;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Failed to load words: {ex.Message}", "OK");
+        }
+    }
+
 
 	private void CreateTheGrid() 
 	{
@@ -114,6 +172,7 @@ public partial class MainPage : ContentPage
         if (guess.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
         {
             DisplayStatus.Text = "You Won!";
+            isGameOver = true;
             await playAgain();
         }
 
@@ -125,6 +184,7 @@ public partial class MainPage : ContentPage
             if (attempts == 6)
             {
                 DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord}";
+                isGameOver = true;
                 await playAgain();
             }
         }
@@ -242,10 +302,10 @@ public partial class MainPage : ContentPage
     private async void RestartGame() 
     {
         attempts = 0;
-        isGameOver = true;
+        isGameOver = false;
         guess = string.Empty;
 
-        savePlayerAttempt(isGameOver, wordleViewModel.ChosenWord, attempts);
+        savePlayerAttempt(correctWord: wordleViewModel.ChosenWord, numOfGuesses: attempts);
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 5; j++) {
@@ -263,28 +323,33 @@ public partial class MainPage : ContentPage
                 }
             }
         }
-
-        await OnAppearing();
         EnableSubmitButton();
+        DisplayStatus.Text = "";
+        
+        await SetNewWordAsync();  
     }
 
     private async Task playAgain()
     {
         bool playAgain = await DisplayAlert("Congratulations!", "Would you like to play another round?", "Yes", "No");
-            
+
         if (playAgain)
         {
             RestartGame();
         }
+
         else
         {
             DisplayStatus.Text = "Thank you for playing!";
+            await Task.Delay(1000);
+            //await Navigation.PopAsync();
         }
     }
 
-    private async Task savePlayerAttempt(bool isWordGuessed, string correctWord, int numOfGuesses)
+
+    private async Task savePlayerAttempt(string correctWord, int numOfGuesses)
     {
-        var attempt = new PlayerAttempt(isWordGuessed, correctWord, numOfGuesses);
+        var attempt = new PlayerAttempt(correctWord, numOfGuesses);
         wordleViewModel.PlayerHistory.Attempts.Add(attempt);
         await wordleViewModel.PlayerHistory.SaveHistoryAsync();
     }

@@ -17,7 +17,7 @@
                 HorizontalOptions="Center" />
 
         <Label x:Name="chosenWordLbl"  
-            Text="{Binding ChosenWord}" 
+            Text="{Binding ChosenWord1}" 
             FontSize="30" 
             FontFamily="Karnak Condensed"
             FontAttributes="Bold"

@@ -18,11 +18,6 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Padding="5">
-                        <Label Text="{Binding IsWordGuessed}" 
-                            FontSize="30" 
-                            FontFamily="Karnak Condensed"
-                            FontAttributes="Bold"
-                            TextColor="Black" />
 
                         <Label Text="{Binding CorrectWord}" 
                             FontSize="30" 
