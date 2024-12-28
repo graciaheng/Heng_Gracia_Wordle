@@ -40,11 +40,11 @@ public partial class StartPage : ContentPage
         }
 
         // Navigate to the appropriate game page based on selected mode
-        if (selectedGameMode == "1 Player")
+        if (selectedGameMode == "1 Player Mode")
         {
             await Navigation.PushAsync(new MainPage(playerName));
         }
-        else
+        else if (selectedGameMode == "2 Player Mode")
         {
             await Navigation.PushAsync(new DoubleGame(playerName));
         }

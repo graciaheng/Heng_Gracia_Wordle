@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="wordleGame.DoubleGame">
+             x:Class="wordleGame.DoubleGame"
+             Title="Wordle">
 
     <ScrollView>
         <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25"
+            Padding="15"
+            Spacing="15"
             BackgroundColor="White">
 
-        <Label Text="WORDLE" 
-            FontSize="30" 
-            FontFamily="Karnak Condensed"
-            FontAttributes="Bold"
-            TextColor="Black"
-            HorizontalOptions="Center"/>
-
         <Label x:Name="chosenWordLbl"  
-            Text="{Binding ChosenWord1}" 
+            Text="{Binding ChosenWord}" 
             FontSize="30" 
             FontFamily="Karnak Condensed"
             FontAttributes="Bold"
             TextColor="Black"
             HorizontalOptions="Center"/>
 
-        <!-- Player 2 Name Input (Initially hidden) -->
+        <Label x:Name="chosenWordLbl2"  
+            Text="{Binding ChosenWord2}" 
+            FontSize="30" 
+            FontFamily="Karnak Condensed"
+            FontAttributes="Bold"
+            TextColor="Black"
+            HorizontalOptions="Center"/>
+
+        <!-- player 2 name input -->
         <StackLayout x:Name="Player2InputSection" 
             IsVisible="False"
-            Spacing="25">
+            Spacing="15">
 
-            <Label Text="Enter Player 2's name:" 
-                FontSize="20"
+            <Label Text="Please enter Player 2's name before playing:" 
+                FontSize="25"
                 FontFamily="Karnak Condensed"
                 FontAttributes="Bold"
                 TextColor="Black"
@@ -38,186 +40,112 @@
 
             <Entry x:Name="Player2NameEntry" 
                 BackgroundColor="GhostWhite"
-                WidthRequest="300"
+                WidthRequest="200"
+                TextColor="Black"
                 Placeholder="Player 2's name" />
 
-            <Button Text="Submit Player 2's Name" 
+            <Button Text="Submit Name" 
                 FontFamily="Karnak Condensed"
                 FontAttributes="Bold"
                 BackgroundColor="YellowGreen"
                 TextColor="White"
-                WidthRequest="300"
+                WidthRequest="175"
+                HeightRequest="50"
                 Clicked="OnPlayer2NameSubmit" />
-
         </StackLayout>
 
-        <HorizontalStackLayout
-           HorizontalOptions="CenterAndExpand" Spacing="50">
-             <!-- player 1 grid -->
-        <Grid x:Name="GridPageContent1" BackgroundColor="Black"
-         HeightRequest="500" 
-         WidthRequest="500"
-         HorizontalOptions="CenterAndExpand" 
-         VerticalOptions="CenterAndExpand" >
-                <!-- Content added here at runtime -->
-            </Grid>
-        
-        <!-- player 2 grid -->
-        <Grid x:Name="GridPageContent2" BackgroundColor="Blue"
-         HeightRequest="500" 
-         WidthRequest="500"
-         HorizontalOptions="CenterAndExpand" 
-         VerticalOptions="CenterAndExpand" >
-                <!-- Content added here at runtime -->
-        </Grid>
-        </HorizontalStackLayout>
-
-        <!-- entry boxes for wordle -->
-            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Entry x:Name="Letter1" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20"
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black" />
-
-                <Entry x:Name="Letter2" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20" 
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black" />
-
-                <Entry x:Name="Letter3"
-                    WidthRequest="40"
-                    HeightRequest="40" 
-                    FontSize="20"
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black"/>
-                
-                <Entry x:Name="Letter4" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20" 
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black"/>
-                
-                <Entry x:Name="Letter5" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20" 
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black"/>
-            </HorizontalStackLayout>
-            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Entry x:Name="Letter6" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20"
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black" />
-
-                <Entry x:Name="Letter7" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20" 
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black" />
-
-                <Entry x:Name="Letter8"
-                    WidthRequest="40"
-                    HeightRequest="40" 
-                    FontSize="20"
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black"/>
-                
-                <Entry x:Name="Letter9" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20" 
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black"/>
-                
-                <Entry x:Name="Letter10" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    FontSize="20" 
-                    FontFamily="Karnak Condensed"
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center" 
-                    MaxLength="1"
-                    BackgroundColor="GhostWhite"
-                    TextColor="Black"/>
-            </HorizontalStackLayout>
-
+        <StackLayout Spacing="15" >
             <Label x:Name = "DisplayStatus"
                 HorizontalOptions="Center"
-                FontSize="20"
+                FontSize="30"
                 FontFamily="Karnak Condensed"
                 FontAttributes="Bold"
                 TextColor="Black" />
 
-            <Label x:Name = "DisplayStatus2"
+            <Label x:Name = "GridName1"
                 HorizontalOptions="Center"
                 FontSize="20"
                 FontFamily="Karnak Condensed"
                 FontAttributes="Bold"
                 TextColor="Black" />
 
+            <!-- player 1 grid -->
+            <Grid x:Name="GridPageContent1" BackgroundColor="White" HeightRequest="500" WidthRequest="500"
+                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="True">
+                <!-- Content added here at runtime -->
+            </Grid>
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center" Spacing="10" Grid.Row="0" Grid.Column="0">
+                <Entry x:Name="Letter1" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter2" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter3" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter4" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter5" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+            </StackLayout>
+
+            <Label x:Name = "GridName2"
+                HorizontalOptions="Center"
+                FontSize="20"
+                FontFamily="Karnak Condensed"
+                FontAttributes="Bold"
+                TextColor="Black" />
+            
+            <!-- player 2 grid -->
+            <Grid x:Name="GridPageContent2" BackgroundColor="White" HeightRequest="500" WidthRequest="500"
+                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="True">
+                <!-- Content added here at runtime -->
+            </Grid>
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center" Spacing="10" Grid.Row="0" Grid.Column="0">
+                <Entry x:Name="Letter6" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter7" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter8" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter9" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+                <Entry x:Name="Letter10" WidthRequest="40" HeightRequest="40" FontSize="20" FontFamily="Karnak Condensed"
+                    FontAttributes="Bold" HorizontalTextAlignment="Center" MaxLength="1" BackgroundColor="GhostWhite"
+                    TextColor="Black" />
+            </StackLayout>
+
+            <!-- submit game button -->
             <Button x:Name="submitButton"
                 Text="Submit Guess" 
                 FontFamily="Karnak Condensed"
                 FontAttributes="Bold"
                 BackgroundColor="YellowGreen"
                 TextColor="White"
-                WidthRequest="300"
+                WidthRequest="175"
+                HeightRequest="50"
                 Clicked="submitGuess" />
-
+                
+            <!-- show game history button -->
             <Button x:Name="historyButton"
                 Text="View History" 
                 FontFamily="Karnak Condensed"
                 FontAttributes="Bold"
                 BackgroundColor="YellowGreen"
                 TextColor="White"
-                WidthRequest="300"
+                WidthRequest="175"
+                HeightRequest="50"
                 Clicked="showHistory" />
-
+        </StackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

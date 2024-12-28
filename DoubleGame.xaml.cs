@@ -36,7 +36,8 @@ public partial class DoubleGame : ContentPage
 		this.playerName1 = playerName1;
         CreateTheGrid();
 		DisplayStatus.Text = $"{playerName1}'s Turn";
-		DisplayStatus2.Text = $"{playerName1}'s Turn";
+		GridName1.Text = $"{playerName1}'s Grid";
+		GridName2.Text = "";
 		Player2InputSection.IsVisible = true;
 	}
 
@@ -52,6 +53,7 @@ public partial class DoubleGame : ContentPage
 
         // hide Player 2's input section once the name is submitted
         Player2InputSection.IsVisible = false;
+		GridName2.Text = $"{playerName2}'s Grid";
     }
 
 	protected override async void OnAppearing()
@@ -134,10 +136,6 @@ public partial class DoubleGame : ContentPage
 
 	private void CreateTheGrid() 
 	{
-        if (isGridCreated == true)
-        {
-            return;
-        }
 
         for (int i = 0; i < 6; ++i) 
 		{
@@ -156,8 +154,10 @@ public partial class DoubleGame : ContentPage
 		GridPageContent2.RowSpacing = 10;
         GridPageContent2.ColumnSpacing = 10;
 
-        for (int i = 0; i < 6; ++i) {
-            for (int j = 0; j < 5; ++j) {
+        for (int i = 0; i < 6; ++i) 
+		{
+            for (int j = 0; j < 5; ++j) 
+			{
                 
                 Frame styledFrame = new Frame
                 {
@@ -180,11 +180,39 @@ public partial class DoubleGame : ContentPage
                 styledFrame.Content = styledLabel;
 
 				GridPageContent1.Add(styledFrame, j, i);
-				GridPageContent2.Add(styledFrame, j, i);
             }
         }
 
-        isGridCreated = true;
+		for (int i = 0; i < 6; ++i) 
+		{
+            for (int j = 0; j < 5; ++j) 
+			{
+                
+                Frame styledFrame2 = new Frame
+                {
+                    BackgroundColor = Colors.GhostWhite,
+                    BorderColor = Colors.Grey,
+                    CornerRadius = 10
+                };
+
+                Label styledLabel2 = new Label
+                {
+                    Text = "", // Initially no text
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    FontSize = 24,
+                    FontFamily = "Karnak Condensed",
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.White
+                };
+
+				styledFrame2.Content = styledLabel2;
+				GridPageContent2.Add(styledFrame2, j, i);
+            }
+        }
+
+		GridPageContent1.IsVisible = true;
+        GridPageContent2.IsVisible = true;
     }
 
     private async void showHistory(object sender, EventArgs args) 
@@ -194,14 +222,15 @@ public partial class DoubleGame : ContentPage
 
 	private async void submitGuess(object sender, EventArgs args) 
 	{
-		if (player2Turn == false)
+		//player 1 turn
+		if (!player2Turn)
 		{
 			guess1 = $"{Letter1.Text}{Letter2.Text}{Letter3.Text}{Letter4.Text}{Letter5.Text}";
 
 			//check if user has inputted correctly
             if (guess1.Length != 5 || !guess1.All(char.IsLetter))
             {
-                DisplayAlert("Invalid Guess", "Please enter a valid 5-letter word.", "OK");
+                DisplayAlert("Invalid Guess", "Please enter a valid 5-letter word. Please ensure the correct player is playing.", "OK");
                 return;
             }
 
@@ -211,9 +240,8 @@ public partial class DoubleGame : ContentPage
             //correct word
             if (guess1.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
             {
-                DisplayStatus.Text = "You Won!";
+                DisplayStatus.Text = $"{playerName1} Won!";
                 isGameOver1 = true;
-                await playAgain();
             }
 
             //wrong word
@@ -225,24 +253,23 @@ public partial class DoubleGame : ContentPage
                 {
                     DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord}";
                     isGameOver1 = true;
-                    await playAgain();
                 }
             }
 
 			player2Turn = true;
 			DisplayStatus.Text = $"{playerName2}'s Turn";
-			DisplayStatus2.Text = $"{playerName2}'s Turn";
 			ClearEntryFields1();
 		}
 
-		else if (player2Turn == true)
+		//player 2 turn
+		else if (player2Turn)
 		{
 			guess2 = $"{Letter6.Text}{Letter7.Text}{Letter8.Text}{Letter9.Text}{Letter10.Text}";
 
 			//check if user has inputted correctly
             if (guess2.Length != 5 || !guess2.All(char.IsLetter))
             {
-                DisplayAlert("Invalid Guess", "Please enter a valid 5-letter word.", "OK");
+                DisplayAlert("Invalid Guess", "Please enter a valid 5-letter word. Please ensure the correct player is playing.", "OK");
                 return;
             }
 
@@ -252,9 +279,8 @@ public partial class DoubleGame : ContentPage
             //correct word
             if (guess2.Equals(wordleViewModel.ChosenWord2, StringComparison.OrdinalIgnoreCase))
             {
-                DisplayStatus2.Text = "You Won!";
+                DisplayStatus.Text = $"{playerName2} Won!";
                 isGameOver2 = true;
-                await playAgain();
             }
 
             //wrong word
@@ -264,15 +290,34 @@ public partial class DoubleGame : ContentPage
 
                 if (attempts2 == 6)
                 {
-                    DisplayStatus2.Text = $"Game Over! The word was {wordleViewModel.ChosenWord2}";
+                    DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord2}";
                     isGameOver2 = true;
-                    await playAgain();
                 }
             }
 			player2Turn = false;
 			DisplayStatus.Text = $"{playerName1}'s Turn";
-			DisplayStatus2.Text = $"{playerName1}'s Turn";
 			ClearEntryFields2();
+		}
+
+		IsGameOver();
+	}
+
+	private async void IsGameOver() 
+	{
+		if (isGameOver1 || isGameOver2)
+		{
+			string winnerMessage = isGameOver1 ? $"{playerName1} Won!" : $"{playerName2} Won!";
+            //DisplayAlert("Game Over", winnerMessage, "OK");
+			DisplayStatus.Text = winnerMessage;
+			DisableSubmitButton();
+		    await playAgain();
+		}
+
+		if (attempts1 == 6 && attempts2 == 6)
+		{
+			DisplayAlert("Game Over", "The words were {wordleViewModel.ChosenWord} & {wordleViewModel.ChosenWord2}", "OK");
+			DisableSubmitButton();
+		    await playAgain();
 		}
 	}
 
@@ -351,9 +396,9 @@ public partial class DoubleGame : ContentPage
         // Update the relevant grid (Player 1 or Player 2)
         Grid currentGrid = player2Turn ? GridPageContent2 : GridPageContent1;
 
-		for (int i = 0; i < 5; i++) {
-			 
-			  // Get the correct Border from the grid
+		for (int i = 0; i < 5; i++) 
+		{
+			// Get the correct Border from the grid
 			int index = i + (currentAttempts * 5);
 
             if (currentGrid.Children[index] is Frame frame)
@@ -377,10 +422,6 @@ public partial class DoubleGame : ContentPage
                         break;
                     }
                 }
-			}
-			else
-			{
-				Console.WriteLine($"Unexpected type: {currentGrid.Children[index].GetType()}");
 			}
 		}
 	}
@@ -421,6 +462,8 @@ public partial class DoubleGame : ContentPage
 		Array.Fill(feedback1, string.Empty);
         Array.Fill(feedback2, string.Empty);
 
+		DisplayStatus.Text = $"{playerName1}'s Turn";
+
         savePlayerAttempt(correctWord: wordleViewModel.ChosenWord, numOfGuesses: attempts1);
 		savePlayerAttempt(correctWord: wordleViewModel.ChosenWord2, numOfGuesses: attempts2);
 
@@ -428,7 +471,6 @@ public partial class DoubleGame : ContentPage
 		ResetGrid(GridPageContent2);
 
         EnableSubmitButton();
-        DisplayStatus.Text = "";
         
         await SetNewWordAsync();  
     }
