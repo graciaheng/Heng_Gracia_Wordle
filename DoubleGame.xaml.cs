@@ -18,7 +18,6 @@ public partial class DoubleGame : ContentPage
     private bool isGridCreated = false;
     private bool isGameOver1 = false;
 	private bool isGameOver2 = false;
-
     private Player player1;
     private Player player2;
 	private string playerName1;
@@ -26,6 +25,9 @@ public partial class DoubleGame : ContentPage
 	private bool player2Turn = false;
     private string[] feedback1 = new string[5];
 	private string[] feedback2 = new string[5];
+    private bool gameStarted = false;
+    private DateTime timeStarted;
+    private int elapsedTimeInSeconds = 0;
 
 	public DoubleGame(string playerName1)
 	{
@@ -39,6 +41,7 @@ public partial class DoubleGame : ContentPage
 		GridName1.Text = $"{playerName1}'s Grid";
 		GridName2.Text = "";
 		Player2InputSection.IsVisible = true;
+		DisplayAlert("Introduction", "Both players will have a different word. First player to guess their respective word wins!", "OK");
 	}
 
 	private void OnPlayer2NameSubmit(object sender, EventArgs e)
@@ -54,6 +57,8 @@ public partial class DoubleGame : ContentPage
         // hide Player 2's input section once the name is submitted
         Player2InputSection.IsVisible = false;
 		GridName2.Text = $"{playerName2}'s Grid";
+        gameStarted = true;
+        StartTimer();
     }
 
 	protected override async void OnAppearing()
@@ -149,10 +154,10 @@ public partial class DoubleGame : ContentPage
 			GridPageContent2.AddColumnDefinition(new ColumnDefinition());
         }
 
-        GridPageContent1.RowSpacing = 10;
-        GridPageContent1.ColumnSpacing = 10;
-		GridPageContent2.RowSpacing = 10;
-        GridPageContent2.ColumnSpacing = 10;
+        GridPageContent1.RowSpacing = 5;
+        GridPageContent1.ColumnSpacing = 5;
+		GridPageContent2.RowSpacing = 5;
+        GridPageContent2.ColumnSpacing = 5;
 
         for (int i = 0; i < 6; ++i) 
 		{
@@ -171,7 +176,7 @@ public partial class DoubleGame : ContentPage
                     Text = "", // Initially no text
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 24,
+                    FontSize = 15,
                     FontFamily = "Karnak Condensed",
                     FontAttributes = FontAttributes.Bold,
                     TextColor = Colors.White
@@ -200,7 +205,7 @@ public partial class DoubleGame : ContentPage
                     Text = "", // Initially no text
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 24,
+                    FontSize = 15,
                     FontFamily = "Karnak Condensed",
                     FontAttributes = FontAttributes.Bold,
                     TextColor = Colors.White
@@ -219,6 +224,26 @@ public partial class DoubleGame : ContentPage
 	{
         await Navigation.PushAsync(new HistoryPage());
     }
+
+    private void StartTimer()
+	{
+		Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+		{
+			//timer only starts when the game starts
+			if (gameStarted)
+		    {
+			    elapsedTimeInSeconds++;
+				TimerLabel.Text = $"Time: {elapsedTimeInSeconds} seconds";
+				return true;
+			}
+
+			else 
+			{
+				return false;
+			}
+
+		});
+	}
 
 	private async void submitGuess(object sender, EventArgs args) 
 	{
@@ -341,88 +366,178 @@ public partial class DoubleGame : ContentPage
 
     private void checkGuess() 
     {
-		// ensures that the correct feedback array is chosen based on the current player
-        string[] currentFeedback = player2Turn ? feedback2 : feedback1;
-        Array.Fill(currentFeedback, string.Empty);
-        bool[] matched = new bool[5];
+		//player 1 turn
+		if (!player2Turn)
+		{
+			string[] currentFeedback = feedback1;
+			// ensures that the correct feedback array is chosen based on the current player
+			Array.Fill(currentFeedback, string.Empty);
+			bool[] matched = new bool[5];
+			// ensures that the correct guess string is chosen based on the current player
+			string currentGuess = guess1;
+			string correctWord = wordleViewModel.ChosenWord;
 
-		// ensures that the correct guess string is chosen based on the current player
-        string currentGuess = player2Turn ? guess2 : guess1;
-
-        for (int i = 0; i < 5; i++)
-        {
-            char guessedLetter = char.ToUpper(currentGuess[i]);
-            string correctWord = player2Turn ? wordleViewModel.ChosenWord2 : wordleViewModel.ChosenWord;
-            char correctLetter = char.ToUpper(correctWord[i]);
-
-            if (guessedLetter == correctLetter)
+			for (int i = 0; i < 5; i++)
             {
-                currentFeedback[i] = "Correct";
-                matched[i] = true;
-            }
-        }
+                char guessedLetter = char.ToUpper(currentGuess[i]);
+                char correctLetter = char.ToUpper(correctWord[i]);
 
-        for (int i = 0; i < 5; i++) 
-        {
-            if (currentFeedback[i] == "Correct")
-            continue;
-
-            char guessedLetter = char.ToUpper(currentGuess[i]);
-
-            for (int j = 0; j < 5; j++)
-            {
-                if (!matched[j] && char.ToUpper(wordleViewModel.ChosenWord[j]) == guessedLetter)
+                if (guessedLetter == correctLetter)
                 {
-                    currentFeedback[i] = "WrongPlace"; 
-                    matched[j] = true;
-                    break;
+                    currentFeedback[i] = "Correct";
+                    matched[i] = true;
                 }
             }
 
-            if (currentFeedback[i] == string.Empty)
+            for (int i = 0; i < 5; i++) 
             {
-                currentFeedback[i] = "Incorrect";  
+                if (currentFeedback[i] == "Correct")
+                continue;
+
+                char guessedLetter = char.ToUpper(currentGuess[i]);
+
+                for (int j = 0; j < 5; j++)
+                {
+                    if (!matched[j] && char.ToUpper(wordleViewModel.ChosenWord[j]) == guessedLetter)
+                    {
+                        currentFeedback[i] = "WrongPlace"; 
+                        matched[j] = true;
+                        break;
+                    }
+                }
+
+                if (currentFeedback[i] == string.Empty)
+                {
+                    currentFeedback[i] = "Incorrect";  
+                }
             }
-        }
+		}
+
+		//player 2 turn
+		else if (player2Turn)
+		{
+			string[] currentFeedback = feedback2;
+			// ensures that the correct feedback array is chosen based on the current player
+			Array.Fill(currentFeedback, string.Empty);
+			bool[] matched = new bool[5];
+			// ensures that the correct guess string is chosen based on the current player
+			string currentGuess = guess2;
+			string correctWord = wordleViewModel.ChosenWord2;
+
+			for (int i = 0; i < 5; i++)
+            {
+                char guessedLetter = char.ToUpper(currentGuess[i]);
+                char correctLetter = char.ToUpper(correctWord[i]);
+
+                if (guessedLetter == correctLetter)
+                {
+                    currentFeedback[i] = "Correct";
+                    matched[i] = true;
+                }
+            }
+
+            for (int i = 0; i < 5; i++) 
+            {
+                if (currentFeedback[i] == "Correct")
+                continue;
+
+                char guessedLetter = char.ToUpper(currentGuess[i]);
+
+                for (int j = 0; j < 5; j++)
+                {
+                    if (!matched[j] && char.ToUpper(wordleViewModel.ChosenWord2[j]) == guessedLetter)
+                    {
+                        currentFeedback[i] = "WrongPlace"; 
+                        matched[j] = true;
+                        break;
+                    }
+                }
+
+                if (currentFeedback[i] == string.Empty)
+                {
+                    currentFeedback[i] = "Incorrect";  
+                }
+            }
+		}
     }
 
 	private void UpdateGrid()
 	{
-		// Decide which player's feedback and attempt to use based on whose turn it is
-        string[] currentFeedback = player2Turn ? feedback2 : feedback1;
-        int currentAttempts = player2Turn ? attempts2 : attempts1;
-        string currentGuess = player2Turn ? guess2 : guess1;
-
-        // Update the relevant grid (Player 1 or Player 2)
-        Grid currentGrid = player2Turn ? GridPageContent2 : GridPageContent1;
-
-		for (int i = 0; i < 5; i++) 
+		//player 1 turn
+		if (!player2Turn)
 		{
-			// Get the correct Border from the grid
-			int index = i + (currentAttempts * 5);
+			string[] currentFeedback = feedback1;
+			int currentAttempts = attempts1;
+            string currentGuess = guess1;
+			// Update the relevant grid (Player 1 or Player 2)
+            Grid currentGrid = GridPageContent1;
 
-            if (currentGrid.Children[index] is Frame frame)
-			{
-                if (frame.Content is Label label)
-                {
-                    label.Text = currentGuess[i].ToString().ToUpper();
+			for (int i = 0; i < 5; i++) 
+		    {
+			    // Get the correct Border from the grid
+			    int index = i + (currentAttempts * 5);
 
-				    switch (currentFeedback[i])
-			        {
-				        case "Correct":
-                        frame.BackgroundColor = Colors.YellowGreen;
-                        break;
+                if (currentGrid.Children[index] is Frame frame)
+			    {
+                    if (frame.Content is Label label)
+                    {
+                        label.Text = currentGuess[i].ToString().ToUpper();
+
+				        switch (currentFeedback[i])
+			            {
+				            case "Correct":
+                            frame.BackgroundColor = Colors.YellowGreen;
+                            break;
                 
-				        case "WrongPlace":
-                        frame.BackgroundColor = Colors.Gold;
-                        break;
+				            case "WrongPlace":
+                            frame.BackgroundColor = Colors.Gold;
+                            break;
 
-                        case "Incorrect":
-                        frame.BackgroundColor = Colors.Gray;
-                        break;
+                            case "Incorrect":
+                            frame.BackgroundColor = Colors.Gray;
+                            break;
+                        }
                     }
-                }
-			}
+			    }
+		    }
+		}
+        //player 2 turn
+		else if (player2Turn)
+		{
+			string[] currentFeedback = feedback2;
+			int currentAttempts = attempts2;
+            string currentGuess = guess2;
+			// Update the relevant grid (Player 1 or Player 2)
+            Grid currentGrid = GridPageContent2;
+
+			for (int i = 0; i < 5; i++) 
+		    {
+			    // Get the correct Border from the grid
+			    int index = i + (currentAttempts * 5);
+
+                if (currentGrid.Children[index] is Frame frame)
+			    {
+                    if (frame.Content is Label label)
+                    {
+                        label.Text = currentGuess[i].ToString().ToUpper();
+
+				        switch (currentFeedback[i])
+			            {
+				            case "Correct":
+                            frame.BackgroundColor = Colors.YellowGreen;
+                            break;
+                
+				            case "WrongPlace":
+                            frame.BackgroundColor = Colors.Gold;
+                            break;
+
+                            case "Incorrect":
+                            frame.BackgroundColor = Colors.Gray;
+                            break;
+                        }
+                    }
+			    }
+		    }
 		}
 	}
 
@@ -457,6 +572,7 @@ public partial class DoubleGame : ContentPage
 		attempts2 = 0;
         isGameOver1 = false;
 		isGameOver2 = false;
+		player2Turn = false;
         guess1 = string.Empty;
 		guess2 = string.Empty;
 		Array.Fill(feedback1, string.Empty);
@@ -508,7 +624,7 @@ public partial class DoubleGame : ContentPage
 
         else
         {
-            DisplayStatus.Text = "Thank you for playing!";
+            DisplayStatus.Text = $"Thank you for playing! The words were {wordleViewModel.ChosenWord} & {wordleViewModel.ChosenWord2}";
             await Task.Delay(1000);
             //await Navigation.PopAsync();
         }

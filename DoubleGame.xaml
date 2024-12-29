@@ -26,6 +26,14 @@
             TextColor="Black"
             HorizontalOptions="Center"/>
 
+        <Label x:Name="TimerLabel"  
+            Text="" 
+            FontSize="30" 
+            FontFamily="Karnak Condensed"
+            FontAttributes="Bold"
+            TextColor="Black"
+            HorizontalOptions="Center"/>
+        
         <!-- player 2 name input -->
         <StackLayout x:Name="Player2InputSection" 
             IsVisible="False"
@@ -70,7 +78,7 @@
                 TextColor="Black" />
 
             <!-- player 1 grid -->
-            <Grid x:Name="GridPageContent1" BackgroundColor="White" HeightRequest="500" WidthRequest="500"
+            <Grid x:Name="GridPageContent1" BackgroundColor="White" HeightRequest="350" WidthRequest="350"
                 HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="True">
                 <!-- Content added here at runtime -->
             </Grid>
@@ -101,7 +109,7 @@
                 TextColor="Black" />
             
             <!-- player 2 grid -->
-            <Grid x:Name="GridPageContent2" BackgroundColor="White" HeightRequest="500" WidthRequest="500"
+            <Grid x:Name="GridPageContent2" BackgroundColor="White" HeightRequest="350" WidthRequest="350"
                 HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" IsVisible="True">
                 <!-- Content added here at runtime -->
             </Grid>

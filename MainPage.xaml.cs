@@ -16,6 +16,9 @@ public partial class MainPage : ContentPage
     private bool isGridCreated = false;
     private bool isGameOver = false;
     private string[] feedback = new string[5];
+     private bool gameStarted = false;
+    private DateTime timeStarted;
+    private int elapsedTimeInSeconds = 0;
 
 	public MainPage(string playerName)
 	{
@@ -24,6 +27,8 @@ public partial class MainPage : ContentPage
 		wordleViewModel = new WordleViewModel();
 		this.BindingContext = wordleViewModel;
         CreateTheGrid();
+        gameStarted = true;
+        StartTimer();
 	}
 
 	protected override async void OnAppearing()
@@ -97,8 +102,6 @@ public partial class MainPage : ContentPage
             await DisplayAlert("Error", $"Failed to load words: {ex.Message}", "OK");
         }
     }
-
-
 	private void CreateTheGrid() 
 	{
         if (isGridCreated == true)
@@ -148,6 +151,26 @@ public partial class MainPage : ContentPage
 
         isGridCreated = true;
     }
+
+    private void StartTimer()
+	{
+		Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+		{
+			//timer only starts when the game starts
+			if (gameStarted)
+		    {
+			    elapsedTimeInSeconds++;
+				TimerLabel.Text = $"Time: {elapsedTimeInSeconds} seconds";
+				return true;
+			}
+
+			else 
+			{
+				return false;
+			}
+
+		});
+	}
 
     private async void showHistory(object sender, EventArgs args) 
 	{
