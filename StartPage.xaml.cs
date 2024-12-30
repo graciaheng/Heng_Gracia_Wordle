@@ -6,6 +6,8 @@ namespace wordleGame;
 
 public partial class StartPage : ContentPage
 {
+    private Player player1;
+    private Player player2;
 	public StartPage()
 	{
 		InitializeComponent();
@@ -19,6 +21,7 @@ public partial class StartPage : ContentPage
 
 	private async void OnStartGameClicked(object sender, EventArgs e)
 	{
+        //Get the name inputted from entry
 		string playerName = PlayerNameEntry.Text;
 
         if (string.IsNullOrEmpty(playerName))
@@ -65,8 +68,8 @@ public partial class StartPage : ContentPage
         else
         {
             // Create a new player file
-            Player player = new Player(playerName);
-            string json = JsonSerializer.Serialize(player);
+            player1 = new Player(playerName);
+            string json = JsonSerializer.Serialize(player1);
             await File.WriteAllTextAsync(playerFilePath, json);
         }
     }

@@ -2208,7 +2208,7 @@
         }
       }
     },
-    "net8.0-android34.0/maccatalyst-arm64": {
+    "net8.0-android34.0/iossimulator-arm64": {
       "GoogleGson/2.10.1.4": {
         "type": "package",
         "compile": {
@@ -4836,7 +4836,7 @@
         }
       }
     },
-    "net8.0-ios18.0/maccatalyst-arm64": {
+    "net8.0-ios18.0/iossimulator-arm64": {
       "Microsoft.Extensions.Configuration/8.0.0": {
         "type": "package",
         "dependencies": {
@@ -5678,7 +5678,7 @@
         }
       }
     },
-    "net8.0-maccatalyst18.0/maccatalyst-arm64": {
+    "net8.0-maccatalyst18.0/iossimulator-arm64": {
       "Microsoft.Extensions.Configuration/8.0.0": {
         "type": "package",
         "dependencies": {
@@ -9568,7 +9568,7 @@
       }
     },
     "runtimes": {
-      "maccatalyst-arm64": {
+      "iossimulator-arm64": {
         "#import": []
       }
     }

@@ -13,8 +13,8 @@ public partial class DoubleGame : ContentPage
 	private WordleViewModel wordleViewModel;
 	private int attempts1 = 0;
 	private int attempts2 = 0;
-    private string guess1;
-	private string guess2;
+    private string guess1 = "";
+	private string guess2 = "";
     private bool isGridCreated = false;
     private bool isGameOver1 = false;
 	private bool isGameOver2 = false;
@@ -27,7 +27,8 @@ public partial class DoubleGame : ContentPage
 	private string[] feedback2 = new string[5];
     private bool gameStarted = false;
     private DateTime timeStarted;
-    private int elapsedTimeInSeconds = 0;
+    private int elapsedTimeInSeconds1 = 0;
+    private int elapsedTimeInSeconds2 = 0;
 
 	public DoubleGame(string playerName1)
 	{
@@ -220,6 +221,7 @@ public partial class DoubleGame : ContentPage
         GridPageContent2.IsVisible = true;
     }
 
+    //leads players to the history page
     private async void showHistory(object sender, EventArgs args) 
 	{
         await Navigation.PushAsync(new HistoryPage());
@@ -232,9 +234,22 @@ public partial class DoubleGame : ContentPage
 			//timer only starts when the game starts
 			if (gameStarted)
 		    {
-			    elapsedTimeInSeconds++;
-				TimerLabel.Text = $"Time: {elapsedTimeInSeconds} seconds";
-				return true;
+                //player 1 turn
+                if (!player2Turn)
+                {
+                    elapsedTimeInSeconds1++;
+				    TimerLabel.Text = $"Time Taken: {elapsedTimeInSeconds1} seconds";
+				    return true;
+                }
+
+                //player 2 turn
+                else
+                {
+                    elapsedTimeInSeconds2++;
+				    TimerLabel.Text = $"Time Taken: {elapsedTimeInSeconds2} seconds";
+				    return true;
+                }
+			    
 			}
 
 			else 
@@ -266,6 +281,7 @@ public partial class DoubleGame : ContentPage
             if (guess1.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
             {
                 DisplayStatus.Text = $"{playerName1} Won!";
+                gameStarted = false;
                 isGameOver1 = true;
             }
 
@@ -277,6 +293,7 @@ public partial class DoubleGame : ContentPage
                 if (attempts1 == 6)
                 {
                     DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord}";
+                    gameStarted = false;
                     isGameOver1 = true;
                 }
             }
@@ -305,6 +322,7 @@ public partial class DoubleGame : ContentPage
             if (guess2.Equals(wordleViewModel.ChosenWord2, StringComparison.OrdinalIgnoreCase))
             {
                 DisplayStatus.Text = $"{playerName2} Won!";
+                gameStarted = false;
                 isGameOver2 = true;
             }
 
@@ -316,6 +334,7 @@ public partial class DoubleGame : ContentPage
                 if (attempts2 == 6)
                 {
                     DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord2}";
+                    gameStarted = false;
                     isGameOver2 = true;
                 }
             }
@@ -573,12 +592,18 @@ public partial class DoubleGame : ContentPage
         isGameOver1 = false;
 		isGameOver2 = false;
 		player2Turn = false;
+        elapsedTimeInSeconds1 = 0;
+        elapsedTimeInSeconds2 = 0;
         guess1 = string.Empty;
 		guess2 = string.Empty;
+        gameStarted = true;
 		Array.Fill(feedback1, string.Empty);
         Array.Fill(feedback2, string.Empty);
 
 		DisplayStatus.Text = $"{playerName1}'s Turn";
+
+        StartTimer();
+        TimerLabel.Text = $"Time Taken: 0 seconds";
 
         savePlayerAttempt(correctWord: wordleViewModel.ChosenWord, numOfGuesses: attempts1);
 		savePlayerAttempt(correctWord: wordleViewModel.ChosenWord2, numOfGuesses: attempts2);
@@ -615,7 +640,8 @@ public partial class DoubleGame : ContentPage
 
     private async Task playAgain()
     {
-        bool playAgain = await DisplayAlert("Congratulations!", "Would you like to play another round?", "Yes", "No");
+        string winnerMessage = isGameOver1 ? $"{playerName1} won in {elapsedTimeInSeconds1} seconds!" : $"{playerName2} won in {elapsedTimeInSeconds2} seconds!";
+        bool playAgain = await DisplayAlert(winnerMessage, "Would you like to play another round?", "Yes", "No");
 
         if (playAgain)
         {
@@ -626,6 +652,9 @@ public partial class DoubleGame : ContentPage
         {
             DisplayStatus.Text = $"Thank you for playing! The words were {wordleViewModel.ChosenWord} & {wordleViewModel.ChosenWord2}";
             await Task.Delay(1000);
+            gameStarted = false;
+            savePlayerAttempt(correctWord: wordleViewModel.ChosenWord, numOfGuesses: attempts1);
+		    savePlayerAttempt(correctWord: wordleViewModel.ChosenWord2, numOfGuesses: attempts2);
             //await Navigation.PopAsync();
         }
     }

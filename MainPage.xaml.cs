@@ -12,7 +12,7 @@ public partial class MainPage : ContentPage
 	private readonly FileService _fileService;
 	private WordleViewModel wordleViewModel;
 	private int attempts = 0;
-    private string guess;
+    private string guess = "";
     private bool isGridCreated = false;
     private bool isGameOver = false;
     private string[] feedback = new string[5];
@@ -52,26 +52,6 @@ public partial class MainPage : ContentPage
         }
 
 	}
-
-    /*private async Task LoadOrCreatePlayer(string playerName)
-    {
-        string directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string playerFilePath = Path.Combine(directory, $"{playerName}.json");
-
-        if (File.Exists(playerFilePath))
-        {
-            // Load the player data from the file
-            string json = await File.ReadAllTextAsync(playerFilePath);
-            player1 = JsonSerializer.Deserialize<Player>(json);
-        }
-        else
-        {
-            // Create a new player
-            player1 = new Player(playerName);
-            string json = JsonSerializer.Serialize(player1);
-            await File.WriteAllTextAsync(playerFilePath, json);
-        }
-    }*/
 
     private async Task<string> GetRandomWordAsync()
     {
@@ -195,6 +175,7 @@ public partial class MainPage : ContentPage
         if (guess.Equals(wordleViewModel.ChosenWord, StringComparison.OrdinalIgnoreCase))
         {
             DisplayStatus.Text = "You Won!";
+            gameStarted = false;
             isGameOver = true;
             await playAgain();
         }
@@ -207,6 +188,7 @@ public partial class MainPage : ContentPage
             if (attempts == 6)
             {
                 DisplayStatus.Text = $"Game Over! The word was {wordleViewModel.ChosenWord}";
+                gameStarted = false;
                 isGameOver = true;
                 await playAgain();
             }
@@ -326,6 +308,8 @@ public partial class MainPage : ContentPage
     {
         attempts = 0;
         isGameOver = false;
+        elapsedTimeInSeconds = 0;
+        Array.Fill(feedback, string.Empty);
         guess = string.Empty;
 
         savePlayerAttempt(correctWord: wordleViewModel.ChosenWord, numOfGuesses: attempts);
@@ -365,6 +349,8 @@ public partial class MainPage : ContentPage
         {
             DisplayStatus.Text = "Thank you for playing!";
             await Task.Delay(1000);
+            gameStarted = false;
+            savePlayerAttempt(correctWord: wordleViewModel.ChosenWord, numOfGuesses: attempts);
             //await Navigation.PopAsync();
         }
     }

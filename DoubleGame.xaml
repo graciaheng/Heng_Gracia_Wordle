@@ -10,21 +10,17 @@
             Spacing="15"
             BackgroundColor="White">
 
-        <Label x:Name="chosenWordLbl"  
-            Text="{Binding ChosenWord}" 
-            FontSize="30" 
+        <!--<Label Text="Enable Dark Mode" 
+            FontSize="10" 
             FontFamily="Karnak Condensed"
             FontAttributes="Bold"
             TextColor="Black"
             HorizontalOptions="Center"/>
+        
+        <Switch x:Name="ThemePicker"
+            Toggled="OnThemeToggled"/> -->
 
-        <Label x:Name="chosenWordLbl2"  
-            Text="{Binding ChosenWord2}" 
-            FontSize="30" 
-            FontFamily="Karnak Condensed"
-            FontAttributes="Bold"
-            TextColor="Black"
-            HorizontalOptions="Center"/>
+        
 
         <Label x:Name="TimerLabel"  
             Text="" 
