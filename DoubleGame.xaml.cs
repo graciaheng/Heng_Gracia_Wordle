@@ -42,7 +42,7 @@ public partial class DoubleGame : ContentPage
 		GridName1.Text = $"{playerName1}'s Grid";
 		GridName2.Text = "";
 		Player2InputSection.IsVisible = true;
-		DisplayAlert("Introduction", "Both players will have a different word. First player to guess their respective word wins!", "OK");
+		DisplayAlert("Introduction", "Both players will have a different word. Each player will be timed. First player to guess their respective word wins!", "OK");
 	}
 
 	private void OnPlayer2NameSubmit(object sender, EventArgs e)
@@ -117,7 +117,8 @@ public partial class DoubleGame : ContentPage
 
         return words[new Random().Next(words.Length)];
     }
-    
+
+    //For when player chooses to play again
     private async Task SetNewWordAsync()
     { 
         try 

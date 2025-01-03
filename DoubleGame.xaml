@@ -9,19 +9,7 @@
             Padding="15"
             Spacing="15"
             BackgroundColor="White">
-
-        <!--<Label Text="Enable Dark Mode" 
-            FontSize="10" 
-            FontFamily="Karnak Condensed"
-            FontAttributes="Bold"
-            TextColor="Black"
-            HorizontalOptions="Center"/>
-        
-        <Switch x:Name="ThemePicker"
-            Toggled="OnThemeToggled"/> -->
-
-        
-
+   
         <Label x:Name="TimerLabel"  
             Text="" 
             FontSize="30" 
