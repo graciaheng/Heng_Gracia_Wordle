@@ -9,6 +9,7 @@ namespace wordleGame;
 
 public partial class MainPage : ContentPage
 {
+    //LINK TO GITHUB https://github.com/graciaheng/Heng_Gracia_Wordle
 	private readonly FileService _fileService;
 	private WordleViewModel wordleViewModel;
 	private int attempts = 0;

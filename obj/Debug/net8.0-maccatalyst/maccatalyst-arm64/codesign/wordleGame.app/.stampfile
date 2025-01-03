@@ -1,1 +1,0 @@
--v --force --timestamp=none --sign - --entitlements /Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/obj/Debug/net8.0-maccatalyst/maccatalyst-arm64/Entitlements.xcent /Users/graciatheodoraheng/Desktop/personal/game/Heng_Gracia_Wordle/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/wordleGame.app
